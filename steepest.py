@@ -9,12 +9,13 @@ numpy.random.seed(42)
 
 cwd = os.getcwd()
 cwd
-mydata = io.loadmat('emailvalues.mat')
+mydata = io.loadmat('emailvalues.mat') #vectors of variable values for emails
 
+#dealing with matrices
 ytrain = mydata['ytrain'].T
 xtrain = np.concatenate((mydata['Xtrain'], np.ones((3065, 1))), axis=1).T
 
-
+#making use of sigmoid functions 
 def sigmoid(x):
     a = 1/(1+np.exp(-x))
     return a
@@ -31,14 +32,14 @@ def prediction(w, Data):
             pred.append(-1)
     return pred
 
-
+#objective function for logistic regression
 def updateObj(w, X, y):
     z = np.dot(w, X)
     val = -np.multiply(y, z)
     J = np.sum(np.log(1+np.exp(val)))
     return J
 
-
+#gradient function for updateObj
 def updateGrad(w, X, y):
     z = np.dot(w, X)
     val = -np.multiply(y, z)
@@ -48,14 +49,13 @@ def updateGrad(w, X, y):
     gradJ = np.dot(X, f.T)
     return gradJ
 
-
 flag = True
 w = np.random.randn(1, 58)
 X_test = xtrain
 y_test = ytrain
 count = 0
 maxit = 2000
-tol = 0.00001
+tol = 0.00001 #play around with tol
 y_pred = prediction(w, X_test)
 grad = updateGrad(w, X_test, y_test)
 obj = updateObj(w, X_test, y_test)
@@ -63,6 +63,7 @@ grad_norm = np.sum(grad**2)**0.5
 while(count < maxit and flag):
     count += 1
     old_obj = obj
+    #armijo's rule to find appropriate stepsize
     a = 0.1
     while(updateObj(w-a*grad.T, X_test, y_test)-updateObj(w, X_test, y_test) >= -0.5*a*np.dot(grad.T, grad)):
         a = 0.8*a
@@ -79,15 +80,20 @@ while(count < maxit and flag):
     if old_obj-obj < tol:
         flag = False
 
-
-#learning_rate = 1
-    # while((updateObj(w - learning_rate*grad.T, X_test, y_test) - updateObj(w, X_test, y_test)) >= 0.5*learning_rate*grad):
-    #learning_rate = 0.75*learning_rate
-
-
+#Input test data to check accuracy
 ytest = mydata['ytest'].T
 n = np.shape(mydata['Xtest'])[0]
 xtest = np.concatenate((mydata['Xtest'], np.ones((n, 1))), axis=1).T
 Test_predict = prediction(w, xtest)
 print("Test Accuracy", accuracy_score(
     ytest[0], Test_predict)*100)
+
+#graph of function values against number of iterations
+vall = np.ones((len(w_array), 1))
+for i,w in enumerate(w_array):
+    vall[i] = updateObj(w, X_test, y_test) 
+    print(vall)
+    
+x = np.array(range(len(w_array)))
+plt.plot(x,vall)
+plt.show()
