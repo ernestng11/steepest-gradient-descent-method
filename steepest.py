@@ -9,7 +9,7 @@ numpy.random.seed(42)
 
 cwd = os.getcwd()
 cwd
-mydata = io.loadmat('HW1data.mat')
+mydata = io.loadmat('emailvalues.mat')
 
 ytrain = mydata['ytrain'].T
 xtrain = np.concatenate((mydata['Xtrain'], np.ones((3065, 1))), axis=1).T
