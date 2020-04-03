@@ -7,7 +7,7 @@ import os
 import math
 numpy.random.seed(42)
 
-cwd = os.chdir('/Users/ernestng/Desktop/NUS/Y2S2/DSA3102/HMWK2')
+cwd = os.chdir('filepath here')
 data = io.loadmat('emaildata.mat')
 ytrain = data['ytrain']  # shape = (3065,1)
 ytest = data['ytest']
@@ -62,6 +62,7 @@ obj = updateObj(ytest, w, xtest)
 gradlist = []
 
 while grad_norm > tol:
+    #Backtracking method (Armijo's Rule)
     a = 1
     while updateObj(ytest, w-a*grad.T, xtest)-updateObj(ytest, w, xtest) >= -0.5*a*np.dot(grad, grad.T):
         a = 0.75*a
